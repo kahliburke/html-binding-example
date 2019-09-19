@@ -54,7 +54,6 @@ class HtmlBindingExample extends IDEHelpers {
       {listToSequences}
       {intersperseHtmlWithMethods}
       {sequenceWithMethodAndParam(listToSequences)}
-      {sequenceWithMethodAndParam2(listToSequences)}
     </div>
   }
 
