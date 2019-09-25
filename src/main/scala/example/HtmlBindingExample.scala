@@ -37,7 +37,7 @@ class HtmlBindingExample extends IDEHelpers {
     * This render method combines Binding[Node] values that are declared in this class.
     * Bindings can be easily composed inside HTML tags.
     *
-    * Note that calling .bind
+    * Note that calling .bind is not required inside tags, but can optionally be used: i.e. {simpleBinding.bind}.
     */
   @html def render() = {
     <div id="container">
@@ -140,13 +140,6 @@ class HtmlBindingExample extends IDEHelpers {
     * which may be necessary depending on how an interface is defined.
     */
   val useList: List[NodeBinding[Node]] = List(1 to 2: _*) map intDiv
-
-  /**
-    * Or another sequence type can be used, but note that this doesn't produce a BindingSeq[Node],
-    * which may be necessary depending on how an interface is defined.
-    */
-//  val useListBindSeq: Binding[BindingSeq[Node]] =
-//    Binding { (List(1 to 2: _*) map intDiv) bindSeq }
 
   @html val falseDiv = stringInDiv("False")
   val b = Var(true)
