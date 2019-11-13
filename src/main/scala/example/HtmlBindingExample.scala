@@ -5,7 +5,7 @@ import com.thoughtworks.binding.Binding.{BindingSeq, Constants, Var}
 import com.thoughtworks.binding.bindable._
 import org.lrng.binding.html
 import org.lrng.binding.html.NodeBinding
-import org.scalajs.dom.raw.{Event, Node}
+import org.scalajs.dom.raw.{Event, HTMLDivElement, Node}
 
 import scala.xml.{Elem, NodeBuffer}
 
@@ -33,6 +33,17 @@ class HtmlBindingExample extends IDEHelpers {
   @html def simpleBinding =
     <div>This static tag will be transformed into a Binding[Node]</div>
 
+  case class Bus(noPassengers: Int, color: String)
+  case class Truck(cargo: Int, color: String)
+  @html def worksWithTemplates[T](t: T): NodeBinding[HTMLDivElement] =
+    <div>{
+      t match {
+        case Bus(_, c) => s"The bus is $c"
+        case Truck(_, c) => s"The truck is $c"
+        case _ => s"Unknown type: $t"
+      }
+      }</div>
+
   /**
     * This render method combines Binding[Node] values that are declared in this class.
     * Bindings can be easily composed inside HTML tags.
@@ -42,6 +53,8 @@ class HtmlBindingExample extends IDEHelpers {
   @html def render() = {
     <div id="container">
       {simpleBinding}
+      {worksWithTemplates(Bus(4, "red"))}
+      {worksWithTemplates(Truck(2000, "black"))}
       {changingBinding}
       {noHtmlMacroNecessary}
       {sequenceBinding}
