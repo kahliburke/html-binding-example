@@ -5,9 +5,10 @@ import com.thoughtworks.binding.Binding.{BindingSeq, Constants, Var}
 import com.thoughtworks.binding.bindable._
 import org.lrng.binding.html
 import org.lrng.binding.html.NodeBinding
-import org.scalajs.dom.raw.{Event, Node}
+import org.scalajs.dom.raw.{CustomEvent, Event, Node}
 
 import scala.xml.{Elem, NodeBuffer}
+import org.lrng.ionic.webcomponents.xml._
 
 /**
   * Demonstrates various usage scenarios for @html binding macro.
@@ -41,6 +42,7 @@ class HtmlBindingExample extends IDEHelpers {
     */
   @html def render() = {
     <div id="container">
+      {webComponent}
       {simpleBinding}
       {changingBinding}
       {noHtmlMacroNecessary}
@@ -78,6 +80,42 @@ class HtmlBindingExample extends IDEHelpers {
       {state.bind}
     </div>
   }
+
+  /**
+    * An example of using a web component library, see org.lrng.ionic.webcomponents.xml as an example of handling these
+    * custom tags.
+    */
+  val menuTitle = Var("Menu Title Is Dynamic")
+  val iconName = Var("star")
+  val toggleValue1 = Var(false)
+  val toggleValue2 = Var(false)
+  @html val webComponent =
+    <ion-toolbar xmlns="https://ionicframework.com/webcomponents">
+      <ion-buttons data:slot="primary">
+        <ion-button onclick={e: Event =>
+          menuTitle.value = "Updated Menu Title!"
+          iconName.value = "heart"
+          toggleValue1.value = !toggleValue1.value
+        }>
+          <ion-icon data:slot="icon-only" data:name={iconName.bind}></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{menuTitle.bind}</ion-title>
+      <ion-buttons data:slot="end">
+        <ion-menu-button data:auto-hide="false"></ion-menu-button>
+      </ion-buttons>
+      <ion-item>
+        <ion-label>Toggled By Menu</ion-label>
+        <ion-toggle data:slot="end" checked={toggleValue1.bind}></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>This Toggle Value: {toggleValue2.bind.toString}</ion-label>
+        <ion-toggle data:slot="end" checked={toggleValue2.bind} onIonChange={ionChangeEvent { e: IonChangeEvent =>
+          toggleValue2.value = e.checked.getOrElse(false)
+        }}></ion-toggle>
+        <!-- Won't compile: <ion-title checked={toggleValue.bind}></ion-title>, it doesn't have a checked attribute -->
+      </ion-item>
+    </ion-toolbar>
 
   @html def stringInDiv(s: String) = <div>Your content here: {s}</div>
 
